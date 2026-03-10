@@ -1,2 +1,3 @@
 [console_scripts]
 agenticqa = agenticqa.cli:main
+agenticqa-team = agenticqa.agents.team.runner:main
