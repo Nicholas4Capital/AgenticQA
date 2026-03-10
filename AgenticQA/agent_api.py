@@ -5376,6 +5376,196 @@ async def notify_teams(request: Request):
     return {"sent": result.sent, "error": result.error, "platform": result.platform}
 
 
+# ── 4Capital CMHC Analyst Guided Workflow ──────────────────────────────────
+
+try:
+    from agenticqa.agents.team.analyst_workflow import AnalystGuidedWorkflow
+    _guided_workflow = AnalystGuidedWorkflow(workflow_store=workflow_store)
+except Exception:
+    try:
+        from src.agenticqa.agents.team.analyst_workflow import AnalystGuidedWorkflow
+        _guided_workflow = AnalystGuidedWorkflow(workflow_store=workflow_store)
+    except Exception:
+        _guided_workflow = None
+
+
+class GuidedSessionCreate(BaseModel):
+    analyst: str = "analyst"
+    repo: str = "."
+
+
+class GuidedFieldsInput(BaseModel):
+    fields: Dict[str, str]
+
+
+class GuidedConfirmInput(BaseModel):
+    confirmed: bool = True
+    edits: Optional[str] = None
+
+
+class GuidedChatInput(BaseModel):
+    message: str
+
+
+class GuidedSubmitInput(BaseModel):
+    reviewer: Optional[str] = None
+
+
+@app.get("/api/guided/templates", tags=["Guided Workflow"])
+async def list_guided_templates(category: Optional[str] = None, cmhc_only: bool = False):
+    """List available prompt templates for analyst selection."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    return _guided_workflow.list_templates(category=category, cmhc_only=cmhc_only)
+
+
+@app.get("/api/guided/templates/{template_id}", tags=["Guided Workflow"])
+async def get_guided_template(template_id: str):
+    """Get details for a specific prompt template."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    template = _guided_workflow.get_template(template_id)
+    if not template:
+        raise HTTPException(404, f"Template not found: {template_id}")
+    return {
+        "id": template.id,
+        "name": template.name,
+        "category": template.category,
+        "description": template.description,
+        "prompt_template": template.prompt_template,
+        "required_fields": template.required_fields,
+        "optional_fields": template.optional_fields,
+        "agents": template.agents,
+        "cmhc_relevant": template.cmhc_relevant,
+    }
+
+
+@app.get("/api/guided/categories", tags=["Guided Workflow"])
+async def list_guided_categories():
+    """List all template categories."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    return _guided_workflow.list_categories()
+
+
+@app.post("/api/guided/sessions", tags=["Guided Workflow"])
+async def create_guided_session(body: GuidedSessionCreate):
+    """Start a new guided workflow session for an analyst."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    session = _guided_workflow.create_session(analyst=body.analyst, repo=body.repo)
+    return _guided_workflow._session_response(session)
+
+
+@app.get("/api/guided/sessions", tags=["Guided Workflow"])
+async def list_guided_sessions(analyst: Optional[str] = None):
+    """List active guided workflow sessions."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    return _guided_workflow.list_sessions(analyst=analyst)
+
+
+@app.get("/api/guided/sessions/{session_id}", tags=["Guided Workflow"])
+async def get_guided_session(session_id: str):
+    """Get the current state of a guided session."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    session = _guided_workflow.get_session(session_id)
+    if not session:
+        raise HTTPException(404, f"Session not found: {session_id}")
+    return _guided_workflow._session_response(session)
+
+
+@app.post("/api/guided/sessions/{session_id}/select-template", tags=["Guided Workflow"])
+async def guided_select_template(session_id: str, template_id: str):
+    """Step 1: Select a prompt template."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    try:
+        return _guided_workflow.select_template(session_id, template_id)
+    except ValueError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.post("/api/guided/sessions/{session_id}/fill-fields", tags=["Guided Workflow"])
+async def guided_fill_fields(session_id: str, body: GuidedFieldsInput):
+    """Step 2: Provide field values for the template."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    try:
+        return _guided_workflow.fill_fields(session_id, body.fields)
+    except ValueError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.post("/api/guided/sessions/{session_id}/confirm", tags=["Guided Workflow"])
+async def guided_confirm_plan(session_id: str, body: GuidedConfirmInput):
+    """Step 3: Confirm or edit the plan."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    try:
+        return _guided_workflow.confirm_plan(session_id, confirmed=body.confirmed, edits=body.edits)
+    except ValueError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.post("/api/guided/sessions/{session_id}/execute", tags=["Guided Workflow"])
+async def guided_execute(session_id: str):
+    """Step 4-6: Execute the workflow and run agent team validation."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    try:
+        return _guided_workflow.execute(session_id)
+    except ValueError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.post("/api/guided/sessions/{session_id}/submit", tags=["Guided Workflow"])
+async def guided_submit_for_review(session_id: str, body: GuidedSubmitInput):
+    """Step 7: Submit for PR review."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    try:
+        return _guided_workflow.submit_for_review(session_id, reviewer=body.reviewer)
+    except ValueError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.post("/api/guided/sessions/{session_id}/chat", tags=["Guided Workflow"])
+async def guided_chat(session_id: str, body: GuidedChatInput):
+    """Send a free-form chat message at any step in the guided workflow."""
+    if not _guided_workflow:
+        raise HTTPException(503, "Guided workflow not available")
+    try:
+        return _guided_workflow.chat_message(session_id, body.message)
+    except ValueError as e:
+        raise HTTPException(404, str(e))
+
+
+@app.get("/api/guided/agents", tags=["Guided Workflow"])
+async def list_available_agents():
+    """List all agents available for the team."""
+    try:
+        from agenticqa.agents.team.registry import AgentRegistry
+        import agenticqa.agents.team.specialists  # noqa: F401
+    except ImportError:
+        from src.agenticqa.agents.team.registry import AgentRegistry
+        import src.agenticqa.agents.team.specialists  # noqa: F401
+
+    agents = AgentRegistry.all_agents()
+    return [
+        {
+            "name": cls.name,
+            "description": cls.description,
+            "category": cls.category,
+            "priority": cls.priority,
+            "is_gate": cls.is_gate,
+            "can_auto_fix": cls.can_auto_fix,
+        }
+        for cls in sorted(agents.values(), key=lambda a: a.priority)
+    ]
+
+
 if __name__ == "__main__":
     import uvicorn
 
