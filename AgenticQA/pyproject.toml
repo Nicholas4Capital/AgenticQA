@@ -92,6 +92,7 @@ Documentation = "https://github.com/nhomyk/AgenticQA#readme"
 
 [project.scripts]
 agenticqa = "agenticqa.cli:main"
+agenticqa-team = "agenticqa.agents.team.runner:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
