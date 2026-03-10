@@ -8,7 +8,7 @@ import re
 from typing import Dict, List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -23,6 +23,8 @@ class PluginUtilizingAgent(BaseAgent):
     category = "connectivity"
     priority = 65
     is_gate = False
+    squad = Squad.AI_INTEGRATION
+    pipeline_position = 3
 
     RECOMMENDED_PLUGINS = {
         "python": {

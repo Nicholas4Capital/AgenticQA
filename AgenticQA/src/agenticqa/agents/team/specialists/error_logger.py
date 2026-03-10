@@ -6,7 +6,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -19,6 +19,8 @@ class ErrorLoggerAgent(BaseAgent):
     priority = 35
     can_auto_fix = False
     is_gate = False
+    squad = Squad.CODE_QUALITY
+    pipeline_position = 5
 
     def analyze(self, context: ProjectContext) -> AgentResult:
         findings: List[Finding] = []

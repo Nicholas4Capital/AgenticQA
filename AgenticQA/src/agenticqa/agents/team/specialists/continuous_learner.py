@@ -8,7 +8,7 @@ from collections import Counter
 from typing import Dict, List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -20,6 +20,8 @@ class ContinuousLearningAgent(BaseAgent):
     category = "intelligence"
     priority = 90  # Runs near-last to aggregate everything
     is_gate = False
+    squad = Squad.STRATEGY_VISION
+    pipeline_position = 1
 
     LEARNINGS_FILE = ".agenticqa_learnings.json"
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Type
 
-from agenticqa.agents.team.base import BaseAgent
+from agenticqa.agents.team.base import BaseAgent, Squad
 
 
 class AgentRegistry:
@@ -34,6 +34,14 @@ class AgentRegistry:
     @classmethod
     def by_category(cls, category: str) -> List[Type[BaseAgent]]:
         return [a for a in cls._agents.values() if a.category == category]
+
+    @classmethod
+    def by_squad(cls, squad: Squad) -> List[Type[BaseAgent]]:
+        """Get all agents in a specific squad, sorted by pipeline_position."""
+        return sorted(
+            [a for a in cls._agents.values() if a.squad == squad],
+            key=lambda a: a.pipeline_position,
+        )
 
     @classmethod
     def categories(cls) -> List[str]:
@@ -79,7 +87,8 @@ class AgentTeam:
 
     @property
     def agents(self) -> List[BaseAgent]:
-        return sorted(self._agents, key=lambda a: a.priority)
+        """Return agents sorted by squad then pipeline_position within squad."""
+        return sorted(self._agents, key=lambda a: (a.squad.value, a.pipeline_position))
 
     @property
     def gate_agents(self) -> List[BaseAgent]:

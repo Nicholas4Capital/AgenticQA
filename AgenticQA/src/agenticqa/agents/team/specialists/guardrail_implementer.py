@@ -6,7 +6,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -22,6 +22,8 @@ class GuardrailImplementerAgent(BaseAgent):
     priority = 12
     is_gate = True
     can_auto_fix = False
+    squad = Squad.ARCHITECTURE
+    pipeline_position = 4
 
     GUARDRAIL_CHECKS = {
         "input_validation": (

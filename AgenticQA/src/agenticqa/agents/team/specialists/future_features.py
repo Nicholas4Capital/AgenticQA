@@ -6,7 +6,7 @@ import re
 from typing import Dict, List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -21,6 +21,8 @@ class FutureFeaturesAgent(BaseAgent):
     category = "enterprise"
     priority = 85
     is_gate = False
+    squad = Squad.STRATEGY_VISION
+    pipeline_position = 4
 
     FEATURE_CATEGORIES = {
         "real_time": {

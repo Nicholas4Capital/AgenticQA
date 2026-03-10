@@ -7,7 +7,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -19,6 +19,8 @@ class EnterpriseValueCreationAgent(BaseAgent):
     category = "enterprise"
     priority = 60
     is_gate = False
+    squad = Squad.STRATEGY_VISION
+    pipeline_position = 2
 
     ENTERPRISE_PATTERNS = {
         "multi_tenancy": (r"tenant|multi.?tenant|org_id|organization_id|workspace_id", "Multi-tenancy support"),

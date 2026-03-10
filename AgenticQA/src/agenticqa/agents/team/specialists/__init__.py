@@ -44,6 +44,9 @@ from agenticqa.agents.team.specialists.api_mcp_finder import ComplementaryAPIMCP
 from agenticqa.agents.team.specialists.plugin_utilizer import PluginUtilizingAgent
 from agenticqa.agents.team.specialists.connection_seeker import ConnectionSeekingAgent
 
+# Governance — FINAL GATE (Squad 7)
+from agenticqa.agents.team.specialists.governance import GovernanceAgent
+
 __all__ = [
     "CodeReviewAgent",
     "AccessibilityAgent",
@@ -71,4 +74,5 @@ __all__ = [
     "ComplementaryAPIMCPFinderAgent",
     "PluginUtilizingAgent",
     "ConnectionSeekingAgent",
+    "GovernanceAgent",
 ]

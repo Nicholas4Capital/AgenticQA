@@ -7,7 +7,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -20,6 +20,8 @@ class AccessibilityAgent(BaseAgent):
     priority = 20
     can_auto_fix = True
     is_gate = True
+    squad = Squad.CODE_QUALITY
+    pipeline_position = 2
 
     # HTML accessibility patterns
     A11Y_CHECKS = [

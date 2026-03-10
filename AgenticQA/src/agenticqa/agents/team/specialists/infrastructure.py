@@ -7,7 +7,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -22,6 +22,8 @@ class InfrastructureArchitectAgent(BaseAgent):
     category = "infrastructure"
     priority = 50
     is_gate = False
+    squad = Squad.ARCHITECTURE
+    pipeline_position = 5
 
     INFRA_PATTERNS = {
         "containerization": (r"Dockerfile|docker-compose|FROM\s+\w+|container|podman", "Container support"),

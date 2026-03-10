@@ -6,7 +6,7 @@ import re
 from typing import Dict, List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -21,6 +21,8 @@ class ComplementaryAPIMCPFinderAgent(BaseAgent):
     category = "connectivity"
     priority = 75
     is_gate = False
+    squad = Squad.AI_INTEGRATION
+    pipeline_position = 2
 
     # Known useful API categories based on detected patterns
     API_RECOMMENDATIONS = {

@@ -6,7 +6,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -21,6 +21,8 @@ class RepeatabilityGuardrailAgent(BaseAgent):
     category = "quality"
     priority = 45
     is_gate = False
+    squad = Squad.ARCHITECTURE
+    pipeline_position = 3
 
     def analyze(self, context: ProjectContext) -> AgentResult:
         findings: List[Finding] = []

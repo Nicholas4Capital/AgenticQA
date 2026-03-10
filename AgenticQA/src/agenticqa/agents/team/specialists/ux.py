@@ -7,7 +7,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -19,6 +19,8 @@ class UserExperienceAgent(BaseAgent):
     category = "quality"
     priority = 25
     is_gate = False
+    squad = Squad.CODE_QUALITY
+    pipeline_position = 3
 
     UX_PATTERNS = {
         "loading_state": (r"loading|spinner|skeleton|placeholder", "Has loading states"),

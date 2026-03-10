@@ -6,7 +6,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -18,6 +18,8 @@ class AIImplementerReviewerAgent(BaseAgent):
     category = "intelligence"
     priority = 40
     is_gate = False
+    squad = Squad.AI_INTEGRATION
+    pipeline_position = 1
 
     AI_PATTERNS = {
         "prompt_template": (r"prompt|template|system.?message|user.?message", "Prompt management"),

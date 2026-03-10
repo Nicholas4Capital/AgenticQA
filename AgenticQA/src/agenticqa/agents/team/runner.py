@@ -16,7 +16,7 @@ import os
 import sys
 from typing import Dict, List, Optional
 
-from agenticqa.agents.team.base import ProjectContext
+from agenticqa.agents.team.base import KnowledgeBase, ProjectContext
 from agenticqa.agents.team.orchestrator import LoopConfig, LoopReport, TeamOrchestrator
 from agenticqa.agents.team.registry import AgentRegistry, AgentTeam
 
@@ -108,12 +108,17 @@ def run_team(
     project_root = os.path.abspath(project_root)
     files = discover_files(project_root)
 
+    # Initialize the knowledge base — living document shared by all agents
+    kb_path = os.path.join(project_root, ".agenticqa_knowledge_base.json")
+    knowledge_base = KnowledgeBase(path=kb_path)
+
     context = ProjectContext(
         project_root=project_root,
         source_files=files["source_files"],
         test_files=files["test_files"],
         config_files=files["config_files"],
         config=config or {},
+        knowledge_base=knowledge_base,
     )
 
     team = create_default_team(agent_names)

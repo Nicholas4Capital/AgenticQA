@@ -8,7 +8,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -21,6 +21,8 @@ class CodeReviewAgent(BaseAgent):
     priority = 10
     can_auto_fix = True
     is_gate = True
+    squad = Squad.CODE_QUALITY
+    pipeline_position = 1
 
     # Patterns that indicate code smells
     SMELL_PATTERNS = [

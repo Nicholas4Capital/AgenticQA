@@ -7,7 +7,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -22,6 +22,8 @@ class EnterpriseDirectionAgent(BaseAgent):
     category = "enterprise"
     priority = 80
     is_gate = False
+    squad = Squad.STRATEGY_VISION
+    pipeline_position = 3
 
     def analyze(self, context: ProjectContext) -> AgentResult:
         findings: List[Finding] = []

@@ -7,7 +7,7 @@ import re
 from typing import Dict, List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -19,6 +19,8 @@ class APICheckerAgent(BaseAgent):
     category = "infrastructure"
     priority = 20
     is_gate = True
+    squad = Squad.DOMAIN_EXPERTISE
+    pipeline_position = 3
 
     # REST convention checks
     HTTP_METHODS = {"get", "post", "put", "patch", "delete", "head", "options"}

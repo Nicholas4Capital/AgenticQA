@@ -6,7 +6,7 @@ import re
 from typing import Dict, List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -18,6 +18,8 @@ class ComplianceCheckerAgent(BaseAgent):
     category = "compliance"
     priority = 14
     is_gate = True
+    squad = Squad.DOMAIN_EXPERTISE
+    pipeline_position = 2
 
     COMPLIANCE_FRAMEWORKS = {
         "gdpr": {

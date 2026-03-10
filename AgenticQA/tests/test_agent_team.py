@@ -350,6 +350,30 @@ class TestSpecialists:
         assert any("random" in f.message.lower() or "seed" in f.message.lower()
                     for f in result.findings)
 
+    def test_governance_agent(self, tmp_project):
+        """Test the governance agent (Squad 7 FINAL GATE)."""
+        from agenticqa.agents.team.specialists.governance import GovernanceAgent
+        agent = GovernanceAgent()
+        ctx = make_context(tmp_project)
+        result = agent.run(ctx)
+        assert result.agent_name == "governance"
+        assert agent.squad.value == 7  # Squad 7 = GOVERNANCE
+        assert agent.is_gate is True
+
+    def test_governance_detects_sin(self, tmp_project):
+        """Governance should flag unmasked SIN numbers."""
+        sin_file = tmp_project / "client.py"
+        sin_file.write_text(
+            'client_sin = "123-456-789"\n'
+            'print(f"Processing SIN: {client_sin}")\n'
+        )
+        from agenticqa.agents.team.specialists.governance import GovernanceAgent
+        agent = GovernanceAgent()
+        ctx = make_context(tmp_project)
+        ctx.source_files.append(str(sin_file))
+        result = agent.run(ctx)
+        assert result.metrics["sin_exposures"] > 0
+
     def test_guardrail_implementer(self, tmp_project):
         from agenticqa.agents.team.specialists.guardrail_implementer import GuardrailImplementerAgent
         agent = GuardrailImplementerAgent()
@@ -394,10 +418,11 @@ class TestSpecialists:
             "enterprise_value", "enterprise_direction", "future_features",
             "error_logger", "documentation", "api_mcp_finder",
             "plugin_utilizer", "connection_seeker",
+            "governance",
         ]
         for name in expected:
             assert name in agents, f"Agent '{name}' not registered"
-        assert len(agents) >= 26
+        assert len(agents) >= 27
 
 
 # ---------------------------------------------------------------------------

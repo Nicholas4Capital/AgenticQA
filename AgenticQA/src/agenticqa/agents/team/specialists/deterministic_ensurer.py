@@ -6,7 +6,7 @@ import re
 from typing import List
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -21,6 +21,8 @@ class DeterministicEnsurerAgent(BaseAgent):
     category = "quality"
     priority = 40
     is_gate = True
+    squad = Squad.ARCHITECTURE
+    pipeline_position = 2
 
     NON_DETERMINISTIC_PATTERNS = [
         (r"random\(\)|Math\.random\(\)|randint|randrange|choice\(|shuffle\(|sample\(",

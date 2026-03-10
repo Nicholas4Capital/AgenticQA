@@ -7,7 +7,7 @@ import re
 from typing import Dict, List, Set
 
 from agenticqa.agents.team.base import (
-    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext,
+    AgentResult, AgentSeverity, BaseAgent, Finding, ProjectContext, Squad,
 )
 from agenticqa.agents.team.registry import AgentRegistry
 
@@ -19,6 +19,8 @@ class ImplementationConfirmerAgent(BaseAgent):
     category = "quality"
     priority = 30
     is_gate = True
+    squad = Squad.TESTING_RESILIENCE
+    pipeline_position = 2
 
     def analyze(self, context: ProjectContext) -> AgentResult:
         findings: List[Finding] = []
