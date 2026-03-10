@@ -12,8 +12,8 @@ from agenticqa.agents.team.base import (
 from agenticqa.agents.team.registry import AgentRegistry
 
 
-@AgentRegistry.register
 class EnterpriseValueCreationAgent(BaseAgent):
+    """DEPRECATED: Consolidated into EnterpriseStrategyAgent."""
     name = "enterprise_value"
     description = "Evaluates enterprise readiness: multi-tenancy, SLAs, audit trails, licensing, scalability"
     category = "enterprise"

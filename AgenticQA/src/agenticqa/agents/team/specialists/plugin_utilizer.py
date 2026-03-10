@@ -13,8 +13,8 @@ from agenticqa.agents.team.base import (
 from agenticqa.agents.team.registry import AgentRegistry
 
 
-@AgentRegistry.register
 class PluginUtilizingAgent(BaseAgent):
+    """DEPRECATED: Consolidated into IntegrationScoutAgent."""
     name = "plugin_utilizer"
     description = (
         "Validates plugin/extension usage: ESLint plugins, pytest plugins, "

@@ -12,8 +12,8 @@ from agenticqa.agents.team.base import (
 from agenticqa.agents.team.registry import AgentRegistry
 
 
-@AgentRegistry.register
 class ConnectionSeekingAgent(BaseAgent):
+    """DEPRECATED: Consolidated into IntegrationScoutAgent."""
     name = "connection_seeker"
     description = (
         "Maps integration points, discovers tool connections, validates "

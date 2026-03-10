@@ -11,8 +11,8 @@ from agenticqa.agents.team.base import (
 from agenticqa.agents.team.registry import AgentRegistry
 
 
-@AgentRegistry.register
 class ComplementaryAPIMCPFinderAgent(BaseAgent):
+    """DEPRECATED: Consolidated into IntegrationScoutAgent."""
     name = "api_mcp_finder"
     description = (
         "Discovers complementary APIs, MCP servers, and external services "

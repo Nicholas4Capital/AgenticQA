@@ -11,8 +11,8 @@ from agenticqa.agents.team.base import (
 from agenticqa.agents.team.registry import AgentRegistry
 
 
-@AgentRegistry.register
 class GuardrailImplementerAgent(BaseAgent):
+    """DEPRECATED: Consolidated into DeterministicGuardrailsAgent."""
     name = "guardrail_implementer"
     description = (
         "Validates safety guardrails: input validation, output sanitization, "

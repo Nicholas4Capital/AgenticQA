@@ -11,8 +11,8 @@ from agenticqa.agents.team.base import (
 from agenticqa.agents.team.registry import AgentRegistry
 
 
-@AgentRegistry.register
 class DeterministicEnsurerAgent(BaseAgent):
+    """DEPRECATED: Consolidated into DeterministicGuardrailsAgent."""
     name = "deterministic_ensurer"
     description = (
         "Ensures deterministic behavior: seed management, reproducible outputs, "

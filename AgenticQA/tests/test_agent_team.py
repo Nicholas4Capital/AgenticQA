@@ -333,7 +333,7 @@ class TestSpecialists:
         result = agent.run(ctx)
         assert len(result.findings) > 0
 
-    def test_deterministic_ensurer(self, tmp_project):
+    def test_deterministic_guardrails(self, tmp_project):
         nondeterministic = tmp_project / "rng.py"
         nondeterministic.write_text(textwrap.dedent("""\
             import random
@@ -342,8 +342,8 @@ class TestSpecialists:
                 return random.randint(1, 6)
         """))
 
-        from agenticqa.agents.team.specialists.deterministic_ensurer import DeterministicEnsurerAgent
-        agent = DeterministicEnsurerAgent()
+        from agenticqa.agents.team.specialists.deterministic_guardrails import DeterministicGuardrailsAgent
+        agent = DeterministicGuardrailsAgent()
         ctx = make_context(tmp_project)
         ctx.source_files.append(str(nondeterministic))
         result = agent.run(ctx)
@@ -374,14 +374,21 @@ class TestSpecialists:
         result = agent.run(ctx)
         assert result.metrics["sin_exposures"] > 0
 
-    def test_guardrail_implementer(self, tmp_project):
-        from agenticqa.agents.team.specialists.guardrail_implementer import GuardrailImplementerAgent
-        agent = GuardrailImplementerAgent()
+    def test_integration_scout(self, tmp_project):
+        from agenticqa.agents.team.specialists.integration_scout import IntegrationScoutAgent
+        agent = IntegrationScoutAgent()
         ctx = make_context(tmp_project)
         result = agent.run(ctx)
-        assert result.agent_name == "guardrail_implementer"
-        # Small project will be missing many guardrails
-        assert len(result.findings) > 0
+        assert result.agent_name == "integration_scout"
+        assert result.passed  # Advisory agent always passes
+
+    def test_enterprise_strategy(self, tmp_project):
+        from agenticqa.agents.team.specialists.enterprise_strategy import EnterpriseStrategyAgent
+        agent = EnterpriseStrategyAgent()
+        ctx = make_context(tmp_project)
+        result = agent.run(ctx)
+        assert result.agent_name == "enterprise_strategy"
+        assert "enterprise_score_pct" in result.metrics
 
     def test_error_logger(self, tmp_project):
         from agenticqa.agents.team.specialists.error_logger import ErrorLoggerAgent
@@ -404,25 +411,39 @@ class TestSpecialists:
         assert result.passed  # Learner never blocks
 
     def test_all_agents_registered(self):
-        """Verify all 26 agents are registered."""
+        """Verify all 22 agents are registered (post-consolidation)."""
         import agenticqa.agents.team.specialists  # noqa: F401
         agents = AgentRegistry.all_agents()
         expected = [
+            # Squad 1 - Code Quality
             "code_review", "accessibility", "user_experience",
+            "documentation", "error_logger",
+            # Squad 2 - Testing & Resilience
             "functionality_tester", "implementation_confirmer",
             "calculation_specialist", "brute_force_breaker",
-            "deterministic_ensurer", "repeatability_guardrail",
-            "api_checker", "database_specialist", "infrastructure_architect",
-            "cmhc_specialist", "guardrail_implementer", "compliance_checker",
-            "ai_implementer", "continuous_learner", "context_specialist",
-            "enterprise_value", "enterprise_direction", "future_features",
-            "error_logger", "documentation", "api_mcp_finder",
-            "plugin_utilizer", "connection_seeker",
+            # Squad 3 - Architecture (consolidated)
+            "database_specialist", "deterministic_guardrails",
+            "infrastructure_architect",
+            # Squad 4 - AI & Integration (consolidated)
+            "ai_implementer", "integration_scout", "context_specialist",
+            # Squad 5 - Domain Expertise
+            "cmhc_specialist", "compliance_checker", "api_checker",
+            # Squad 6 - Strategy (consolidated)
+            "continuous_learner", "enterprise_strategy", "future_features",
+            # Squad 7 - Governance
             "governance",
         ]
         for name in expected:
             assert name in agents, f"Agent '{name}' not registered"
-        assert len(agents) >= 27
+        assert len(agents) >= 22
+        # Deprecated agents should NOT be registered
+        for old_name in [
+            "deterministic_ensurer", "repeatability_guardrail",
+            "guardrail_implementer", "api_mcp_finder",
+            "plugin_utilizer", "connection_seeker",
+            "enterprise_value", "enterprise_direction",
+        ]:
+            assert old_name not in agents, f"Deprecated agent '{old_name}' still registered"
 
 
 # ---------------------------------------------------------------------------

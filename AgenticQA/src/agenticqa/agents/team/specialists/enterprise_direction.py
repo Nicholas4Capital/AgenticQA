@@ -12,8 +12,8 @@ from agenticqa.agents.team.base import (
 from agenticqa.agents.team.registry import AgentRegistry
 
 
-@AgentRegistry.register
 class EnterpriseDirectionAgent(BaseAgent):
+    """DEPRECATED: Consolidated into EnterpriseStrategyAgent."""
     name = "enterprise_direction"
     description = (
         "Evaluates strategic alignment: architecture consistency, tech debt, "

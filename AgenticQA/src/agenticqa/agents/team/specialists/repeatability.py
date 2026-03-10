@@ -11,8 +11,8 @@ from agenticqa.agents.team.base import (
 from agenticqa.agents.team.registry import AgentRegistry
 
 
-@AgentRegistry.register
 class RepeatabilityGuardrailAgent(BaseAgent):
+    """DEPRECATED: Consolidated into DeterministicGuardrailsAgent."""
     name = "repeatability_guardrail"
     description = (
         "Ensures repeatable outcomes: config-driven behavior, feature flags, "
